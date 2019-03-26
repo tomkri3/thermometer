@@ -4,28 +4,25 @@ import com.google.common.collect.Range;
 import com.vendavo.interview.thermometer.Color;
 import com.vendavo.interview.thermometer.Thermometer;
 
+import java.util.Collections;
+import java.util.Map;
+
 public class ThermometerImpl implements Thermometer {
 
-    private enum ColorAssigner {
 
-        // @formatter:off
-        RED(Color.RED,                  Range.atLeast(40d)),
-        ORANGE(Color.ORANGE,            Range.closedOpen(35d, 40d)),
-        YELLOW(Color.YELLOW,            Range.closedOpen(25d, 35d)),
-        GREEN(Color.GREEN,              Range.closedOpen(10d, 25d)),
-        LIGHT_BLUE(Color.LIGHT_BLUE,    Range.closedOpen(5d, 10d)),
-        BLUE(Color.BLUE,                Range.closedOpen(-10d, 5d)),
-        DARK_BLUE(Color.DARK_BLUE,      Range.lessThan(-10d));
-        // @formatter:on
-
-        final Color color;
-        final Range<Double> range;
-
-        ColorAssigner(Color color, Range<Double> range) {
-            this.color = color;
-            this.range = range;
-        }
-    }
+    private static final Map<Color, Range<Double>> COLOR_RANGE_MAP = Collections.unmodifiableMap(
+            Map.of(
+                    // @formatter:off
+                    Color.RED,          Range.atLeast(40d),
+                    Color.ORANGE,       Range.closedOpen(35d, 40d),
+                    Color.YELLOW,       Range.closedOpen(25d, 35d),
+                    Color.GREEN,        Range.closedOpen(10d, 25d),
+                    Color.LIGHT_BLUE,   Range.closedOpen(5d, 10d),
+                    Color.BLUE,         Range.closedOpen(-10d, 5d),
+                    Color.DARK_BLUE,    Range.lessThan(-10d)
+                    // @formatter:on
+            )
+    );
 
     /**
      * Cases:
@@ -43,9 +40,9 @@ public class ThermometerImpl implements Thermometer {
      */
     @Override
     public Color measure(double temperature) throws IllegalAccessException {
-        for (ColorAssigner value : ColorAssigner.values()) {
-            if (value.range.contains(temperature)) {
-                return value.color;
+        for (Map.Entry<Color, Range<Double>> colorRangeEntry : COLOR_RANGE_MAP.entrySet()) {
+            if(colorRangeEntry.getValue().contains(temperature)){
+                return colorRangeEntry.getKey();
             }
         }
 
